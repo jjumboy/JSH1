@@ -93,8 +93,6 @@ def init():
 	
 	global voice_client1
 		
-	global task1
-	
 	global channel_info
 	global channel_name
 	global channel_voice_name
@@ -273,8 +271,6 @@ async def task():
 	
 	global voice_client1
 		
-	global task1
-	
 	global channel_info
 	global channel_name
 	global channel_id
@@ -286,6 +282,7 @@ async def task():
 		if voice_client1.is_connected() == False :
 			voice_client1 = await client.get_channel(basicSetting[6]).connect(reconnect=True)
 			if voice_client1.is_connected() :
+				await dbLoad()
 				await client.get_channel(channel).send( '<다시 왔습니다.!>', tts=False)
 			
 	while not client.is_closed():
@@ -615,7 +612,6 @@ def handle_exit():
 # 봇이 구동되었을 때 동작되는 코드입니다.
 @client.event
 async def on_ready():
-	global task1
 	global channel
 	
 	global channel_info
@@ -664,7 +660,7 @@ async def on_ready():
 
 	# 디스코드에는 현재 본인이 어떤 게임을 플레이하는지 보여주는 기능이 있습니다.
 	# 이 기능을 사용하여 봇의 상태를 간단하게 출력해줄 수 있습니다.
-	await client.change_presence(status=discord.Status.idle, activity=discord.Game(name="여어!히사시부리!", type=1))
+	await client.change_presence(status=discord.Status.online, activity=discord.Game(name="야호!", type=1))
 
 while True:
 	# 봇이 새로운 메시지를 수신했을때 동작되는 코드입니다.
@@ -701,8 +697,6 @@ while True:
 		
 		global voice_client1
 			
-		global task1
-		
 		global channel_info
 		global channel_name
 		global channel_id
@@ -1095,7 +1089,7 @@ while True:
 				sayMessage = tmp_sayMessage[3:]
 				await MakeSound(message.author.display_name +'님이.' + sayMessage, './sound/say')
 				await client.get_channel(channel).send("```< " + msg.author.display_name + " >님이 \"" + sayMessage + "\"```", tts=False)
-				#await PlaySound(voice_client1, './sound/say.mp3')
+				#wait PlaySound(voice_client1, './sound/say.mp3')
 
 			##################################
 
@@ -1341,7 +1335,7 @@ while True:
 						datelist2.append(bossTime[i])
 
 				for i in range(fixed_bossNum):
-					if fixed_bossTime[i] < datetime.datetime.now() + datetime.timedelta(hours= 3):
+					if fixed_bossTime[i] < datetime.datetime.now() + datetime.timedelta(hours=int(basicSetting[0])+3):
 						datelist2.append(fixed_bossTime[i])
 
 				datelist = list(set(datelist2))
@@ -1353,10 +1347,10 @@ while True:
 						aa.append(bossData[i][0])		                     #output_bossData[0] : 보스명
 						if bossMungFlag[i] == True :
 							aa.append(tmp_bossTime[i])                       #output_bossData[1] : 시간
-							aa.append(tmp_bossTime[i].strftime('%H:%M:%S'))  #output_bossData[2] : 시간(00:00:00)
+							aa.append(tmp_bossTime[i].strftime('%H:%M:%S'))  #output_bossData[2] : 시간(00:00:00)  *초 제거 희망시 '%H:%M:%S' -> '%H:%M'
 							aa.append('-')	                                 #output_bossData[3] : -
 						else :
-							aa.append(bossTime[i])                           #output_bossData[1] : 시간
+							aa.append(bossTime[i])                           #output_bossData[1] : 시간            *초 제거 희망시 '%H:%M:%S' -> '%H:%M'
 							aa.append(bossTime[i].strftime('%H:%M:%S'))      #output_bossData[2] : 시간(00:00:00)
 							aa.append('+')	                                 #output_bossData[3] : +
 						aa.append(bossData[i][2])                            #output_bossData[4] : 멍/미입력 보스
@@ -1368,7 +1362,7 @@ while True:
 				for i in range(fixed_bossNum):
 					aa.append(fixed_bossData[i][0])                      #output_bossData[0] : 보스명
 					aa.append(fixed_bossTime[i])                         #output_bossData[1] : 시간
-					aa.append(fixed_bossTime[i].strftime('%H:%M:%S'))    #output_bossData[2] : 시간(00:00:00)
+					aa.append(fixed_bossTime[i].strftime('%H:%M:%S'))    #output_bossData[2] : 시간(00:00:00)      *초 제거 희망시 '%H:%M:%S' -> '%H:%M'
 					aa.append('@')                                       #output_bossData[3] : @
 					aa.append(0)                                         #output_bossData[4] : 멍/미입력 보스
 					aa.append(0)                                         #output_bossData[5] : 멍/미입력횟수
@@ -1442,11 +1436,11 @@ while True:
 						aa.append(bossData[i][0])		                     #output_bossData[0] : 보스명
 						if bossMungFlag[i] == True :
 							aa.append(tmp_bossTime[i])                       #output_bossData[1] : 시간
-							aa.append(tmp_bossTime[i].strftime('%H:%M:%S'))  #output_bossData[2] : 시간(00:00:00)
+							aa.append(tmp_bossTime[i].strftime('%H:%M:%S'))  #output_bossData[2] : 시간(00:00:00)   *초 제거 희망시 *초 제거 희망시 '%H:%M:%S' -> '%H:%M'
 							aa.append('-')	                                 #output_bossData[3] : -
 						else :
 							aa.append(bossTime[i])                           #output_bossData[1] : 시간
-							aa.append(bossTime[i].strftime('%H:%M:%S'))      #output_bossData[2] : 시간(00:00:00)
+							aa.append(bossTime[i].strftime('%H:%M:%S'))      #output_bossData[2] : 시간(00:00:00)   *초 제거 희망시 *초 제거 희망시 '%H:%M:%S' -> '%H:%M'
 							aa.append('+')	                                 #output_bossData[3] : +
 						aa.append(bossData[i][2])                            #output_bossData[4] : 멍/미입력 보스
 						aa.append(bossMungCnt[i])	                         #output_bossData[5] : 멍/미입력횟수
@@ -1456,7 +1450,7 @@ while True:
 
 				fixed_information = ''
 				for i in range(fixed_bossNum):
-						tmp_timeSTR = fixed_bossTime[i].strftime('%H:%M:%S')
+						tmp_timeSTR = fixed_bossTime[i].strftime('%H:%M:%S')  #*초 제거 희망시 '%H:%M:%S' -> '%H:%M'
 						fixed_information += tmp_timeSTR + ' : ' + fixed_bossData[i][0] + '\n'
 
 				if len(fixed_information) != 0:
@@ -1544,6 +1538,14 @@ while True:
 			if message.content == '!명치':
 				await client.get_channel(channel).send( '<보탐봇 명치 맞고 숨 고르기 중! 잠시만요!>', tts=False)
 				print("명치!")
+				for i in range(bossNum):
+					if bossMungFlag[i] == True:
+						bossTimeString[i] = tmp_bossTime[i].strftime('%H:%M:%S')
+						bossDateString[i] = tmp_bossTime[i].strftime('%Y-%m-%d')
+						bossFlag[i] = False
+						bossFlag0[i] = False
+						bossMungFlag[i] = False
+				await dbSave()
 				await voice_client1.disconnect()
 				#client.clear()
 				raise SystemExit
